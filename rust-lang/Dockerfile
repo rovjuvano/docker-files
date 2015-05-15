@@ -16,6 +16,6 @@ ENV LD_LIBRARY_PATH /usr/local/lib
 
 WORKDIR /data
 
-RUN curl -s https://static.rust-lang.org/rustup.sh | env SHELL=/bin/sh /bin/sh -s -- --revision 1.0.0-beta.4 --disable-sudo -y
+RUN curl -s https://static.rust-lang.org/rustup.sh | env SHELL=/bin/sh /bin/sh -s -- --revision 1.0.0-beta.5 --disable-sudo -y
 
 CMD ["cargo", "help"]

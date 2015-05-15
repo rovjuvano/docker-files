@@ -12,7 +12,7 @@ Based on Debian Jessie
 
 ## Run tests using cargo
 ```sh
-alias cargo='docker run --rm -t --volume "$(pwd):/data" rovjuvano/rust:1.0.0-beta.4 cargo'
+alias cargo='docker run --rm -t --volume "$(pwd):/data" rovjuvano/rust:1.0.0-beta.5 cargo'
 ```
 
 ```sh
@@ -23,7 +23,7 @@ Runs `cargo test` against the current directory within the container
 
 ## Run gdb or valgrind against test binary
 ```sh
-alias rust-shell='docker run --rm -it --volume "$(pwd):/data" rovjuvano/rust:1.0.0-beta.4'
+alias rust-shell='docker run --rm -it --volume "$(pwd):/data" rovjuvano/rust:1.0.0-beta.5'
 ```
 
 ```sh
