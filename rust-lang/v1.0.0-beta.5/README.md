@@ -8,40 +8,33 @@ Includes:
 
 Based on Debian Jessie
 
-# Create data container for persistent .cargo directory
-```sh
-docker run --name dot-cargo --volume /root/.cargo tianon/true:latest
-```
-
-# Setup useful aliases
-```sh
-alias rust-shell='docker run --rm -it --volumes-from dot-cargo --volume "$(pwd):/data" rovjuvano/rust-lang:1.0.0'
-alias cargo='rust-shell cargo'
-alias rustc='rust-shell rustc'
-```
-
 # Examples
 
 ## Run tests using cargo
 ```sh
+alias cargo='docker run --rm -t --volume "$(pwd):/data" rovjuvano/rust-lang:1.0.0-beta.5 cargo'
+```
+
+```sh
 cargo test
 ```
 
+Runs `cargo test` against the current directory within the container
+
 ## Run gdb or valgrind against test binary
+```sh
+alias rust-shell='docker run --rm -it --volume "$(pwd):/data" rovjuvano/rust-lang:1.0.0-beta.5'
+```
+
 ```sh
 rust-shell gdb target/debug/my-bin-0123456789abcdef
 rust-shell valgrind target/debug/my-bin-0123456789abcdef
 ```
 
-## Get explanation of error
-```sh
-rustc -e ....
-```
-
 ## Set environment variables
+
 ```sh
 rust-shell env RUST_BACKTRACE=1 cargo run
-rust-shell env USER="foo <foo@example.com>" cargo new bar
 ```
 
 ## Open shell prompt inside container

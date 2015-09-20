@@ -15,7 +15,7 @@ docker run --name dot-cargo --volume /root/.cargo tianon/true:latest
 
 # Setup useful aliases
 ```sh
-alias rust-shell='docker run --rm -it --volumes-from dot-cargo --volume "$(pwd):/data" rovjuvano/rust-lang:1.0.0'
+alias rust-shell='docker run --rm -it --volumes-from dot-cargo --volume "$(pwd):/data" rovjuvano/rust-lang:1.1.0'
 alias cargo='rust-shell cargo'
 alias rustc='rust-shell rustc'
 ```

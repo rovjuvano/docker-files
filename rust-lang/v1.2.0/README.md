@@ -8,17 +8,13 @@ Includes:
 
 Based on Debian Jessie
 
-# Create data container for persistent .cargo directory
-```sh
-docker run --name dot-cargo --volume /root/.cargo tianon/true:latest
-```
-
 # Setup useful aliases
 ```sh
-alias rust-shell='docker run --rm -it --volumes-from dot-cargo --volume "$(pwd):/data" rovjuvano/rust-lang:1.0.0'
+alias rust-shell='docker run --rm -it --volume /var/lib/docker/tmp/dot-cargo:/root/.cargo --volume "$(pwd):/data" -e USER="${USER}" rovjuvano/rust-lang:1.2.0'
 alias cargo='rust-shell cargo'
 alias rustc='rust-shell rustc'
 ```
+Use whatever you like for the .cargo directory. Example persists across restarts when using Docker Toolbox (formerly Boot2Docker).
 
 # Examples
 
@@ -41,7 +37,6 @@ rustc -e ....
 ## Set environment variables
 ```sh
 rust-shell env RUST_BACKTRACE=1 cargo run
-rust-shell env USER="foo <foo@example.com>" cargo new bar
 ```
 
 ## Open shell prompt inside container
@@ -52,4 +47,4 @@ rust-shell /bin/bash
 Modifications to container are discarded. If you understand the rust-shell alias or the Dockerfile, feel free to create persistent containers or build your own updated images.
 
 ## Notes
-smoke tested with Docker v1.5.0 and Boot2Docker v1.5.0 on MacOS
+smoke tested with Docker Toolbox v1.8.1 on MacOS 10.10
