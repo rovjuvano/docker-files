@@ -1,0 +1,21 @@
+#!/bin/bash
+DEFAULT_RUBY_VERSION=latest
+: ${DOCKER_RUBY_VERSION:=${DEFAULT_RUBY_VERSION}}
+DOCKER_SHELL_IMAGE=ruby:${DOCKER_RUBY_VERSION}
+DOCKER_SHELL_CONTAINER=shell-ruby-${DOCKER_RUBY_VERSION}
+source $(type -p docker-shell.sh)
+function usage() {
+  P=$(basename "$0")
+  usage_template | \
+  sed \
+    -e 's/\(@SHELL_NAME@ run\).*/\1 ruby --version/' \
+    -e 's/\(@SHELL_NAME@ exec\).*/\1 gem install pry/' \
+    -e "s/@SHELL_NAME@/${P}/g" \
+
+  cat <<__EOF__
+
+# environment
+DOCKER_RUBY_VERSION - version of docker image to use (defaults to ${DEFAULT_RUBY_VERSION})
+__EOF__
+}
+docker_shell "$@"

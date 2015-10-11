@@ -1,0 +1,14 @@
+#!/bin/bash
+DEFAULT_LINUX_SHELL_IMAGE=debian:jessie
+DOCKER_SHELL_IMAGE=${DOCKER_LINUX_SHELL_IMAGE:-${DEFAULT_LINUX_SHELL_IMAGE}}
+DOCKER_SHELL_CONTAINER=shell-linux-$(tr ':/' '-' <<<"${DOCKER_SHELL_IMAGE}")
+source $(type -p docker-shell.sh)
+function usage() {
+  usage_default
+  cat <<__EOF__
+
+# environment
+DOCKER_LINUX_SHELL_IMAGE - docker image to use (defaults to ${DEFAULT_LINUX_SHELL_IMAGE})
+__EOF__
+}
+docker_shell "$@"

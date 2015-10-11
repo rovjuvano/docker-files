@@ -1,2 +1,2 @@
 #!/bin/bash
-exec rust-shell bash -c "'racer $@; true'"
+exec rust-shell exec bash -c "'racer $@; true'"

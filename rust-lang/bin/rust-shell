@@ -1,49 +1,25 @@
 #!/bin/bash -e
+source $(type -p docker-shell.sh)
+DEFAULT_RUST_VERSION=1.3.0-racer
+: ${DOCKER_RUST_VERSION:=${DEFAULT_RUST_VERSION}}
+DOCKER_SHELL_IMAGE=rovjuvano/rust-lang:${DOCKER_RUST_VERSION}
+DOCKER_SHELL_CONTAINER=shell-rust-${DOCKER_RUST_VERSION}
+# VOLUME_ARGS="--volume dot-cargo:/root/.cargo"
+DOCKER_SHELL_ARGS_RUN="${VOLUME_ARGS} -e USER='${USER}'"
+DOCKER_SHELL_ARGS_CREATE="${DOCKER_SHELL_ARGS_RUN}"
 function usage() {
-  V=1.3
-  echo -ne "$@"
+  P=$(basename "$0")
+  usage_template | \
+  sed \
+    -e 's/\(@SHELL_NAME@ run\).*/\1 rustc --version/' \
+    -e 's/\(@SHELL_NAME@ exec\).*/\1 cargo test/' \
+    -e "s/@SHELL_NAME@/${P}/g" \
+
   cat <<__EOF__
-# Run command in throwaway container
-> DOCKER_RUST_TAG=rovjuvano/rust-lang:${V}.0-racer rust-shell command-to-run
 
-# Start reusable container (create if does not exist)
-> DOCKER_RUST_TAG=rovjuvano/rust-lang:${V}.0-racer DOCKER_RUST_CONTAINER=rust-${V}-racer rust-shell --start-container
-
-# Exec command in reusable container
-> DOCKER_RUST_CONTAINER=rust-${V}-racer rust-shell commnd-to-exec
+# environment
+DOCKER_RUST_VERSION - version of docker image to use (defaults to ${DEFAULT_RUST_VERSION})
 __EOF__
 }
 
-tty >/dev/null && TTY_ARG=-it
-
-if [ "$1" == '--help' ]; then
-  usage
-  exit 0
-elif [ "$1" == '--start-container' ]; then
-  [ -z "${DOCKER_RUST_CONTAINER}" ] && usage 'DOCKER_RUST_CONTAINER must be set to start reusable container\n\n' && exit 1
-  case $(docker inspect --format '{{.State.Running}}' "${DOCKER_RUST_CONTAINER}" 2>/dev/null) in
-    true) ;;
-    false) docker start "${DOCKER_RUST_CONTAINER}";;
-    *) (cd ~; DOCKER_RUST_EXTRA_ARGS="-d --name='${DOCKER_RUST_CONTAINER}'" DOCKER_RUST_CONTAINER= rust-shell sleep infinity);;
-  esac
-elif [ -n "${DOCKER_RUST_CONTAINER}" ]; then
-  # exec docker exec "${TTY_ARG}" --workdir "${PWD}" "${DOCKER_RUST_CONTAINER}" "$@"
-  SCRIPT="
-    if ! cd '${PWD}' 2>/dev/null; then
-      echo 'ERROR: Cannot exec into container ${DOCKER_RUST_CONTAINER}: Cannot cd: ${PWD}'
-      exit 2
-    fi
-    $@"
-  exec docker exec ${TTY_ARG} "${DOCKER_RUST_CONTAINER}" bash -c "${SCRIPT}"
-else
-  [ -z "${DOCKER_RUST_TAG}" ] && usage 'DOCKER_RUST_TAG must be set to run command in throwaway container or start reusable container\n\n' && exit 1
-  exec docker run \
-    --volume dot-cargo:/root/.cargo \
-    --volume "${PWD}:${PWD}" \
-    --workdir "${PWD}" \
-    -e USER="${USER}" \
-    -e TERM="${TERM}" \
-     ${DOCKER_RUST_EXTRA_ARGS:-${TTY_ARG} --rm} \
-    "${DOCKER_RUST_TAG}" \
-    "$@"
-fi
+docker_shell "$@"

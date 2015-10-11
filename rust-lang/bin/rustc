@@ -1,2 +1,2 @@
 #!/bin/bash
-exec rust-shell rustc "$@"
+exec rust-shell exec rustc "$@"
