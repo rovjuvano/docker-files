@@ -1,0 +1,22 @@
+#!/bin/ash
+SAMBA_USERNAME=smbuser
+usage() {
+  echo -e "$@"
+  cat <<__EOF__
+delete-user - delete samba user
+  --username USERNAME  - username for samba authentication (defaults to 'smbuser')
+
+Ex. delete-user --username example
+__EOF__
+  exit 1
+}
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --username) SAMBA_USERNAME="$2"; shift;;
+    -h|--help) usage;;
+    *) usage "ERROR: Unknown argument: $1";;
+  esac
+  shift
+done
+pdbedit --delete "${SAMBA_USERNAME}"
+deluser "${SAMBA_USERNAME}"

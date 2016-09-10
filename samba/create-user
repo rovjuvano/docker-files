@@ -1,0 +1,37 @@
+#!/bin/ash
+SAMBA_USERNAME=smbuser
+SAMBA_UID=1000
+die() {
+  echo -e "\nFATAL: $@"
+	exit 1
+}
+usage() {
+  echo -e "$@"
+  cat <<__EOF__
+create-user - create (or re-create) samba user
+  --username USERNAME  - username for samba authentication (defaults to 'smbuser')
+  --password PASSWORD  - password for samba authentication (defaults to USERNAME)
+  --uid UID            - uid for file creation (defaults to '1000')
+  --gid GID            - gid for file creation (defaults to UID)
+
+Ex. (read -rsp "Password: " PW; create-user --username example --password "\${PW}" --uid 123 --gid 456)
+__EOF__
+  exit 1
+}
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --username) SAMBA_USERNAME="$2"; shift;;
+    --password) SAMBA_PASSWORD="$2"; shift;;
+    --uid) SAMBA_UID="$2"; shift;;
+    --gid) SAMBA_GID="$2"; shift;;
+    -h|--help) usage;;
+    *) usage "ERROR: Unknown argument: $1";;
+  esac
+  shift
+done
+: ${SAMBA_GID:=${SAMBA_UID}}
+: ${SAMBA_PASSWORD:=${SAMBA_USERNAME}}
+sed -e "\$a${SAMBA_USERNAME}:x:${SAMBA_UID}:${SAMBA_GID}:Samba User:/tmp:/bin/false" -e "/^${SAMBA_USERNAME}:/d" -i /etc/passwd || die "Failed to create user."
+addgroup "${SAMBA_USERNAME}" smbuser || die "Failed to add user to group"
+echo -e "${SAMBA_PASSWORD}\n${SAMBA_PASSWORD}" | pdbedit --create --password-from-stdin "${SAMBA_USERNAME}" >/dev/null || die "Failed to create smb user."
+echo "INFO: created: $(pdbedit --list "${SAMBA_USERNAME}")"
