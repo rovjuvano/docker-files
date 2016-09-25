@@ -1,0 +1,7 @@
+#!/bin/bash
+DATA_DIR=$(realpath -m .)
+docker run --rm -it \
+  -v "$(dirname "${DATA_DIR}"):/data" \
+  --workdir "/data/$(basename "${DATA_DIR}")" \
+  rovjuvano/ffmpeg:1a9h \
+  "$@"
