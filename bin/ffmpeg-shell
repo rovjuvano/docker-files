@@ -1,0 +1,4 @@
+#!/bin/bash
+source "$(type -p docker-shell.sh)"
+export DOCKER_SHELL_IMAGE="${DOCKER_SHELL_IMAGE_FFMPEG:-rovjuvano/ffmpeg:1a9h}"
+docker-shell "$@"

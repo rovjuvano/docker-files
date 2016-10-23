@@ -1,21 +1,4 @@
 #!/bin/bash
-DEFAULT_NODE_VERSION=latest
-: ${DOCKER_NODE_VERSION:=${DEFAULT_NODE_VERSION}}
-DOCKER_SHELL_IMAGE=node:${DOCKER_NODE_VERSION}
-DOCKER_SHELL_CONTAINER=shell-node-${DOCKER_NODE_VERSION}
-source $(type -p docker-shell.sh)
-function usage() {
-  P=$(basename "$0")
-  usage_template | \
-  sed \
-    -e 's/\(@SHELL_NAME@ run\).*/\1 node --version/' \
-    -e 's/\(@SHELL_NAME@ exec\).*/\1 npm ls/' \
-    -e "s/@SHELL_NAME@/${P}/g" \
-
-  cat <<__EOF__
-
-# environment
-DOCKER_NODE_VERSION - version of docker image to use (defaults to ${DEFAULT_NODE_VERSION})
-__EOF__
-}
-docker_shell "$@"
+source "$(type -p docker-shell.sh)"
+export DOCKER_SHELL_IMAGE="${DOCKER_SHELL_IMAGE_NODE:-node:latest}"
+docker-shell "$@"
