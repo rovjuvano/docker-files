@@ -1,0 +1,11 @@
+#!/bin/bash
+source "$(type -p docker-shell.sh)"
+export DOCKER_SHELL_IMAGE="${DOCKER_SHELL_IMAGE_RUST:-buildpack-deps:latest}"
+home=/data/rust
+DOCKER_SHELL_RUN_ARGS+=(
+  -e "HOME=${home}"
+  -e "PATH=${home}/.cargo/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  -e RUST_BACKTRACE
+  -v "rust-data:${home}"
+)
+docker-shell "$@"
