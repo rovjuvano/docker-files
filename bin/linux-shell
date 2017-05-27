@@ -1,4 +1,4 @@
 #!/bin/bash
 source "$(type -p docker-shell.sh)"
-export DOCKER_SHELL_IMAGE="${DOCKER_SHELL_IMAGE_LINUX:-debian/testing}"
+export DOCKER_SHELL_IMAGE="${DOCKER_SHELL_IMAGE_LINUX:-debian:testing}"
 docker-shell "$@"
