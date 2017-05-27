@@ -1,4 +1,9 @@
 #!/bin/bash
 source "$(type -p docker-shell.sh)"
 export DOCKER_SHELL_IMAGE="${DOCKER_SHELL_IMAGE_NODE:-node:latest}"
+home=/data/npm
+DOCKER_SHELL_RUN_ARGS+=(
+  -e "HOME=${home}"
+  -v "npm-data:${home}"
+)
 docker-shell "$@"
