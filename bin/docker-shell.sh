@@ -2,6 +2,7 @@
 # Wrapper around `docker run`
 #  - removes container after run
 #  - automatically passes `-it` if tty present
+#  - passes through TERM environment variable
 #  - extensible list of parameters
 #
 # To pass additional parameters to `docker run`, define either:
@@ -25,7 +26,6 @@ if [[ "${DOCKER_SHELL_RUN_ARGS-unset}" == 'unset' ]]; then
     docker-shell-set-run-args
   else
     DOCKER_SHELL_RUN_ARGS=(
-      -e "TERM=${TERM}"
       -v "$(dirname "${PWD}"):/data"
       --workdir "/data/$(basename "${PWD}")"
     )
@@ -36,6 +36,7 @@ function docker-shell {
   local ARGS=(
     --rm
     "${TTY_ARGS[@]}"
+    -e TERM
     "${DOCKER_SHELL_RUN_ARGS[@]}"
     "${DOCKER_SHELL_IMAGE:-debian:testing}"
   )
