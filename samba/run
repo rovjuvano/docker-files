@@ -1,13 +1,14 @@
 #!/bin/bash
 : ${SAMBA_USERNAME:=smbuser}
-: ${SAMBA_PASSWORD:="${SAMBA_USERNAME}"}
+: ${SAMBA_PASSWORD="${SAMBA_USERNAME}"}
 : ${SAMBA_UID:=1000}
 : ${SAMBA_GID:="${SAMBA_UID}"}
+container=samba-1b5r
 docker run -d \
-  --name samba \
+  --name "${container}" \
   -p 139:139 \
   -p 445:445 \
   -v /Users:/data \
-  rovjuvano/samba:1a9a \
+  rovjuvano/samba:1b5r \
 && if [[ -z "${SAMBA_PASSWORD}" ]]; then read -rsp "Password: " SAMBA_PASSWORD; fi \
-&& docker exec samba create-user --username "${SAMBA_USERNAME}" --password "${SAMBA_PASSWORD}" --uid "${SAMBA_UID}" --gid "${SAMBA_GID}"
+&& docker exec "${container}" create-user --username "${SAMBA_USERNAME}" --password "${SAMBA_PASSWORD}" --uid "${SAMBA_UID}" --gid "${SAMBA_GID}"

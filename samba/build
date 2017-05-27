@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t rovjuvano/samba:1a9a .
+docker build -t rovjuvano/samba:1b5r .
