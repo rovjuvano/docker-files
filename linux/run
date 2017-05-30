@@ -1,0 +1,12 @@
+#!/bin/bash
+TAG=1a9s
+NAME="shell-linux-rovjuvano-shell-linux-${TAG}"
+docker run -d \
+  --name "${NAME}" \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /mnt/sdb1:/mnt/home \
+  -v /mnt/sdc1:/mnt/home/rob/common/frames \
+  -v /mnt/host/c:/mnt/host/c \
+  -v /mnt/host/d:/mnt/host/d \
+  "rovjuvano/shell-linux:${TAG}" \
+  sleep infinity
