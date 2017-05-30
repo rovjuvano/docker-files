@@ -1,0 +1,2 @@
+#!/bin/bash
+docker build -t rovjuvano/shell-linux-xrdp:1b5t .

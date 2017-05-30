@@ -1,0 +1,4 @@
+#!/bin/bash
+source "$(type -p docker-shell.sh)"
+export DOCKER_SHELL_IMAGE=rovjuvano/shell-linux-xrdp:1b5t
+docker-shell "$@"
